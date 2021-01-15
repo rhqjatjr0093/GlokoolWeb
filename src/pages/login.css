@@ -1,0 +1,27 @@
+.App {
+    background-image: url('../assets/backgroundImage\(1920x1080\).png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.Button {
+    background-color: #00ff0000;
+    border: 0;
+    outline: 0;
+    object-fit: cover;
+}
+
+.ButtonImage {
+    width: 200px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.Container {
+    position: absolute;
+    top:0;right:0;bottom:0;left:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
