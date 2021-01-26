@@ -2,19 +2,16 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import HeaderContainer from '../components/Base/HeaderContainer'
 import * as baseActions from '../redux/modules/base';
+import LoginHeaderContainer from '../components/Base/LoginHeaderContainer';
+import { Chat } from '../containers/Main';
+import { ChatWrapper } from '../components/Chat'
 
 
-class Home extends Component {
+class Main extends Component {
     render() {
         return (
-            <div>
-                <div>
-                    <HeaderContainer/>
-                </div>                                        
-            </div>
-            
+          <Route path="/main/chat" component={Chat}/> 
         );
     }
 }
@@ -26,4 +23,4 @@ export default connect(
     (dispatch) => ({
         BaseActions: bindActionCreators(baseActions, dispatch)
     })
-)(Home);
+)(Main);

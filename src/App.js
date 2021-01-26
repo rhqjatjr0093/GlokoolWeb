@@ -1,15 +1,70 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Home, Auth } from './pages';
-import HeaderContainer from './components/Base/HeaderContainer';
+import {
+    Route,
+    BrowserRouter as Router,
+    Switch,
+    Redirect
+} from "react-router-dom";
+import { Home, Auth, Main } from './pages';
+import { auth } from './Firebase';
+
+function PrivateRoute({ component: Component, authenticated, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={(props) => authenticated === true
+          ? <Component {...props}/>
+          : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      />
+    )
+  }
+  
+  function PublicRoute({ component: Component, authenticated, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={(props) => authenticated === false
+          ? <Component {...props} />
+          : <Redirect to={{ pathname: '/', state: { from: props.location } }} />}
+      />
+    )
+  }
 
 class App extends Component {
+    constructor() {
+        super();
+        this.state = {
+          authenticated: false,
+          loading: true
+        };
+      }
+    
+      componentDidMount() {
+        auth().onAuthStateChanged(user => {
+          if (user) {
+            this.setState({
+              authenticated: true,
+              loading: false
+            });
+          } else {
+            this.setState({
+              authenticated: false,
+              loading: false
+            });
+          }
+        });
+      }
+
     render() {
-        return (
+        return this.state.loading === true ? <h2>Loading...</h2> : (
             <div>
-                <HeaderContainer/>
-                <Route exact path="/" component={Home}/>
-                <Route path="/auth" component={Auth}/>
+                <Router>
+                    <Switch>
+                        <Route exact path="/" component={Home}></Route>
+                        <PublicRoute path="/auth" authenticated={this.state.authenticated} component={Auth}></PublicRoute>
+                        <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}></PrivateRoute>                        
+                    </Switch>
+                </Router>
             </div>
         );
     }

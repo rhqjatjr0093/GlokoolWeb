@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { shadow } from 'lib/styleUtils';
+import { shadow } from '../../lib/styleUtil';
 import { Link } from 'react-router-dom';
 
 // 화면의 중앙에 위치시킨다
@@ -28,7 +28,6 @@ const LogoWrapper = styled.div`
 
 const Logo = styled(Link)`
     color: white;
-    font-family: 'Rajdhani';
     font-size: 2.4rem;
     letter-spacing: 5px;
     text-decoration: none;
@@ -41,7 +40,7 @@ const Contents = styled.div`
     height: auto;
 `;
 
-const AuthWrapper = ({children}) => (
+const ChatWrapper = ({children}) => (
     <Positioner>
         <ShadowedBox>
             <LogoWrapper>
@@ -54,4 +53,4 @@ const AuthWrapper = ({children}) => (
     </Positioner>
 );
 
-export default AuthWrapper;
+export default ChatWrapper;

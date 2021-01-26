@@ -5,3 +5,4 @@ export { default as AuthButton } from './AuthButton';
 export { default as AuthDate } from './AuthDate';
 export { default as AuthGender } from './AuthGender';
 export { default as AuthError } from './AuthError';
+export { default as AuthText } from './AuthText';

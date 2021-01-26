@@ -5,9 +5,28 @@ import {bindActionCreators} from 'redux';
 import { auth, firestore } from '../../Firebase'
 import * as authActions from '../../redux/modules/Auth';
 import moment from 'moment';
-import {isEmail, isLength, isAlphanumeric} from 'validator';
+import {isEmail, isLength, isAlphanumeric, toDate} from 'validator';
 
 class Register extends Component {
+
+    componentDidMount() {
+        if(auth().currentUser != null){
+            console.log(auth().currentUser);
+            this.props.history.push('/main');
+        }
+    }
+
+    componentWillUnmount() {
+        //화면을 이동할때 실행 
+        //입력값 초기화 실행
+
+        this.handleChange({target: {name : 'email', value: ''}});
+        this.handleChange({target: {name : 'password', value: ''}});
+        this.handleChange({target: {name : 'passwordConfirm', value: ''}});
+        this.handleChange({target: {name : 'birthDate', value: ''}});
+        this.handleChange({target: {name : 'gender', value: 'Male'}});
+    }
+    
 
     setError = (message) => {
         const { AuthActions } = this.props;
@@ -84,7 +103,9 @@ class Register extends Component {
         if(!validate['email'](email) 
             || !validate['username'](username) 
             || !validate['password'](password) 
-            || !validate['passwordConfirm'](passwordConfirm)) { 
+            || !validate['passwordConfirm'](passwordConfirm)
+            || !validate['birthDate'](birthDate)
+            ) { 
             return;
         }
 
@@ -103,15 +124,13 @@ class Register extends Component {
                         signupDate: new Date(),
                     })
                     .then(doc => {
-                        auth().signOut();
-
-
-
-                        this.props.history.push('/');
+                        console.log('프로필 업데이트 완료');
+                        this.props.history.push('/auth/email');
                     })
                     .catch(error => {
-                        console.log(error);
-                        
+                        this.setError('가입중 오류가 발생했습니다. 다시 시도해주세요'); 
+                        auth().currentUser.delete();
+                        console.log('프로필 업데이트 실패 기존 가입 계정 삭제')
                     })
                 
             })
@@ -123,6 +142,9 @@ class Register extends Component {
                 }
                 else if (errorCode == 'auth/weak-password') {
                     this.setError('비밀번호가 너무 약합니다');
+                }
+                else{
+                    this.setError(errorCode);
                 }
             })
         
