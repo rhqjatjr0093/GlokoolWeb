@@ -1,7 +1,7 @@
 module.exports = function override(config, env) {
     config.module.rules.push({
       test: /\.js$/,
-      exclude: /node_modules[/\\](?!react-native-gifted-chat|react-native-lightbox|react-native-parsed-text)/,
+      exclude: /node_modules[/\\](?!react-native-gifted-chat|react-native-lightbox|react-native-parsed-text|react-native-typing-animation)/,
       use: {
         loader: 'babel-loader',
         options: {
@@ -9,9 +9,14 @@ module.exports = function override(config, env) {
           configFile: false,
           presets: [
             ['@babel/preset-env', { useBuiltIns: 'usage' }],
-            '@babel/preset-react',
+            '@babel/preset-react'
           ],
-          plugins: ['@babel/plugin-proposal-class-properties'],
+          plugins: [
+            "@babel/plugin-syntax-jsx",
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-transform-react-jsx",
+            "@babel/plugin-transform-react-display-name"
+          ],
         },
       },
     })
