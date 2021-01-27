@@ -1,104 +1,187 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { auth } from '../../Firebase';
-import * as authActions from '../../redux/modules/Auth';
-import { GiftedChat } from 'react-native-gifted-chat'
+import React, { useCallback, useRef } from 'react';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { Avatar, ListItemAvatar, Toolbar } from '@material-ui/core';
+import { GiftedChat, Composer, Bubble } from 'react-native-gifted-chat';
+import { database, auth } from '../../Firebase'
+
+const Chat = () => {
+  const chatRoom = [1,2,3,4,5];
+  const classes = useStyles();
+  const [chatMessages, setChatMessages] = React.useState([]);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const ChatDB = database().ref('/chats/test');
+  const user = auth().currentUser;
+
+  console.log(user)
+
+  //componentwillmount 대신 사용
+  React.useEffect(() => {        
+
+    ChatDB.on('value', snapshot => {
+        console.log(snapshot.val(), "snap shot")
+        if (!snapshot.val()) {
+            return;
+        }
+        let { messages } = snapshot.val();
+        messages = messages.map(node => {
+            console.log(node, "node")
+            const message = {};
+            message._id = node._id;
+            message.text = node.messageType === "message" ? node.text : "";
+            message.createdAt = node.createdAt;
+            message.user = {
+                _id: node.user._id,
+                // 바꿔야 됌
+            };
+            message.image = node.messageType === "image" ? node.image : "";
+            message.audio = node.messageType === "audio" ? node.audio : "";
+            message.messageType = node.messageType;
+            return message;
+        });
+        setChatMessages([...messages])
+    });;
+    
+    
+    return () => {
+        setChatMessages([]);
+    };
+}, [])
 
 
-const loremIpsum ='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum';
-
-
-const messages = [];
-messages.push(generateMessage(`Idylla 2`, 3,  {image:'https://www.wykop.pl/cdn/c3201142/comment_Sc8p2KAVLx3EyNIpXuOXngk3ZYJ0g8eq.jpg'}));
-messages.push(generateMessage(`Goood 1`, 2, {image:'http://img2.dmty.pl//uploads/201010/1286036107_by_julia2332_600.jpg'}));
-messages.push(generateMessage(`This is a great example of system message`, 2, {system: true}));
-
-for (let i = 0; i < 30; i++) {
-  messages.push(generateMessage(loremIpsum.substring(0,(Math.random() * 100000)%loremIpsum.length), i))
-}
-
-function generateMessage(text, index, additionalData) {
-  return {
-    id: Math.round(Math.random() * 1000000),
-    text: text,
-    createdAt: new Date(),
-    user: {
-      id: index % 3 === 0 ? 1 : 2,
-      name: 'Johniak',
-    },
-    ...additionalData,
-  }
-}
-
-class Chat extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      messages: messages
-    }
-    this.onSend = this.onSend.bind(this)
-  }
-
-  renderLoading() {
+  const renderLoading = () => {
     return (<div>Loading...</div>)
   }
 
-  onSend(messages) {
-    for(let message of messages){
-      this.setState({messages: [message,...this.state.messages]})
-    }
-  }
+  const onSend = (messages = []) => {
+      messages[0].messageType = "message";
+      messages[0].createdAt = new Date().getTime();
+      console.log(messages[0])
+      ChatDB.update({messages: [messages[0], ...chatMessages]});
+  }        
 
-  render() {
-    return (
-      <div className="App" style={styles.container}>
-        <div style={styles.conversationList}>
-        Converstions
-        </div>
-        <div style={styles.chat}>
-          <GiftedChat user={{id: 1,}}
-                      messages={this.state.messages}
-                      onSend={this.onSend}/>
-          </div>
-        <div style={styles.converationDetails}>
-        Conversation details
-        </div>
-      </div>
+  const renderBubble = (props) => {
+    return(
+        <Bubble 
+            {...props}
+            wrapperStyle={{
+                left:{
+                    backgroundColor: '#F5F5F5',
+                    fontColor: 'black',
+                    fontWeight: 'bold'
+                },
+                right: {
+                    backgroundColor: '#FFC043',
+                    fontWeight: 'bold'
+                }
+            }}
+        />
+
     );
   }
+
+  const renderComposer = (props) => {
+    return(
+       <Composer
+            {...props}
+            textInputProps={{
+              ...props.textInputProps,
+              autoFocus: true,
+              blurOnSubmit: true,
+              onSubmitEditing: (() => {
+                      if (props.text && props.onSend) {
+                        props.onSend({text: props.text.trim()}, true);
+                      }
+              })              
+            }}
+            textInputStyle={{justifyContent: 'center'}}
+       />
+    );
+  }
+
+  return (
+    <div>
+        <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+                paper: classes.drawerPaper,
+            }}
+        >
+            <Toolbar/>
+            <div className={classes.drawerContainer}>
+            
+            <List 
+              button            
+              selected
+            >
+              {chatRoom.map((key) => (
+                <ListItem key={key} button selected={selectedIndex === key} onClick={() => setSelectedIndex(key)}>                      
+                  <ListItemAvatar>
+                    <Avatar src='../../assets/profile.jpg'/>
+                  </ListItemAvatar>
+                  <ListItemText primary='장충단 길' secondary='고객명'/>
+                </ListItem>
+              ))}
+            </List>
+            </div>            
+        </Drawer>
+
+        <div className={classes.chat}>
+          <GiftedChat
+            user={{
+              _id: `${user?.uid}`,
+            }}
+            infiniteScroll={true}
+            createdAt={new Date().getTime()}
+            textInputProps={{autoFocus: true}}
+            messages={chatMessages}
+            alwaysShowSend={true}
+            renderUsernameOnMessage={true}
+            onSend={messages => onSend(messages)}
+            renderLoading={renderLoading}
+            renderBubble={renderBubble}
+            renderComposer={renderComposer}
+            renderAvatar={null}
+          />
+        </div>        
+      </div>
+  );
+  
 }
 
-const styles = {
-  container: {
-    flex: 1,
+const useStyles = makeStyles((theme) => ({
+  drawer: {
+    position: 'relative',
+    width: 300,
+    flexShrink: 0,
+    zIndex: 0,
+  },
+  drawerPaper: {
+    width: 300,
+  },
+  drawerContainer: {
+    overflow: 'auto',
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 100,
+  },
+  chat: {
+    position: 'fixed',
+    bottom: 0,
+    left: 300,
+    right: 0,
     display: "flex",
     flexDirection: "row",
     height: "100vh",
+    borderColor: 'gray'
   },
-  conversationList: {
-    display:'flex',
-    flex: 1,
-  },
-  chat: {
-    display: "flex",
-    flex: 3,
-    flexDirection: "column",
-    borderWidth: "1px",
-    borderColor: "#ccc",
-    borderRightStyle: "solid",
-    borderLeftStyle: "solid",
-  },
-  converationDetails: {
-    display:'flex',
-    flex: 1,
-  }
-}
 
-export default connect(
-  (state) => ({
-  }),
-  (dispatch) => ({
-      AuthActions: bindActionCreators(authActions, dispatch)
-  })
-)(Chat);
+}));
+
+export default Chat;

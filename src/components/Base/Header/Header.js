@@ -6,12 +6,10 @@ import { shadow, media } from '../../../lib/styleUtil';
 
 // 상단 고정, 그림자
 const Positioner = styled.div`
-    display: flex;
     flex-direction: column;
     position: fixed;
-    top: 0px;
     width: 100%;
-    ${shadow(1)}
+    z-index: 1000;
 `;
 
 // 흰 배경, 내용 중간 정렬
@@ -25,7 +23,7 @@ const WhiteBackground = styled.div`
 // 해더의 내용
 const HeaderContents = styled.div`
     width: 1200px;
-    height: 55px;
+    height: 65px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -58,7 +56,7 @@ const Spacer = styled.div`
 // 하단 그래디언트 테두리
 const GradientBorder = styled.div`
     height: 3px;
-    background: #000000;
+    background: #707070;
 `;
 
 const Header = ({children}) => {

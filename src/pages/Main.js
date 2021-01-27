@@ -4,14 +4,21 @@ import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from '../redux/modules/base';
 import LoginHeaderContainer from '../components/Base/LoginHeaderContainer';
-import { Chat } from '../containers/Main';
-import { ChatWrapper } from '../components/Chat'
+import Chat from '../containers/Main/Chat';
+import { ChatRoomLeft } from '../components/Chat'
+
 
 
 class Main extends Component {
     render() {
         return (
-          <Route path="/main/chat" component={Chat}/> 
+            <div className={{display : 'flex'}}>
+                <LoginHeaderContainer/>
+                <Chat/>                  
+            </div>
+            
+
+
         );
     }
 }

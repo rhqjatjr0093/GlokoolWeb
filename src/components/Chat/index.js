@@ -1,1 +1,1 @@
-export { default as ChatWrapper } from './ChatWrapper';
+export { default as ChatRoomLeft } from './ChatRoom';
