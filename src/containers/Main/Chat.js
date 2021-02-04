@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import { useHistory } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -15,20 +16,22 @@ const Chat = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const ChatDB = database().ref('/chats/test');
   const user = auth().currentUser;
+  const history = useHistory();
 
   console.log(user)
 
   //componentwillmount 대신 사용
-  React.useEffect(() => {        
+  React.useEffect(() => {    
+    if(user.emailVerified == false){
+      history.push('/email/fail')
+    }
 
     ChatDB.on('value', snapshot => {
-        console.log(snapshot.val(), "snap shot")
         if (!snapshot.val()) {
             return;
         }
         let { messages } = snapshot.val();
         messages = messages.map(node => {
-            console.log(node, "node")
             const message = {};
             message._id = node._id;
             message.text = node.messageType === "message" ? node.text : "";
@@ -91,7 +94,7 @@ const Chat = () => {
               ...props.textInputProps,
               autoFocus: true,
               blurOnSubmit: true,
-              onSubmitEditing: (() => {
+              onSubmitEditing: (() => { //Enter 키를 입력시 Send 할 수 있도록
                       if (props.text && props.onSend) {
                         props.onSend({text: props.text.trim()}, true);
                       }

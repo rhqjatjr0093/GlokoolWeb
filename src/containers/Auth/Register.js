@@ -7,6 +7,44 @@ import * as authActions from '../../redux/modules/Auth';
 import moment from 'moment';
 import {isEmail, isLength, isAlphanumeric, toDate} from 'validator';
 
+const profileDocUpdate = async(user, name, email, gender, birthDate) => {
+
+    var userDocument = await firestore()
+      .collection('Guides')
+      .doc(user?.uid)
+      .set({
+        name : name,
+        email : email,
+        gender : gender,
+        signupDate : new Date(),  //가입한 날짜
+        birthDate : birthDate
+      })
+      .then(() => {
+        console.log('프로필 문서 업데이트 성공')
+      })
+      .catch(() => {
+        console.log('프로필 문서 업데이트 성공')
+      })
+
+};
+
+const profileUpdate = async(user, name) => {
+
+    var profile = await user.updateProfile({
+      displayName : name,
+      photoURL: ''          
+    })
+    .then(() => {
+      console.log('프로필 업데이트 성공')
+    })
+    .catch(() => {      
+      console.log('프로필 업데이트 실패')
+    })
+};
+
+
+
+
 class Register extends Component {
 
     componentDidMount() {
@@ -112,27 +150,10 @@ class Register extends Component {
         this.setError(null);
 
         await auth().createUserWithEmailAndPassword(email, password)
-            .then((user) => {
-                var uid = user.user.uid;
-               
-                var userDoc = firestore().collection('Guides').doc(uid)
-                    .set({
-                        name: username,
-                        email: email,
-                        birthDate: birthDate,
-                        gender: gender,
-                        signupDate: new Date(),
-                    })
-                    .then(doc => {
-                        console.log('프로필 업데이트 완료');
-                        this.props.history.push('/auth/email');
-                    })
-                    .catch(error => {
-                        this.setError('가입중 오류가 발생했습니다. 다시 시도해주세요'); 
-                        auth().currentUser.delete();
-                        console.log('프로필 업데이트 실패 기존 가입 계정 삭제')
-                    })
-                
+            .then(async(response) => {
+                await profileDocUpdate(response.user, username, email, gender, birthDate);
+                await profileUpdate(response.user, username);
+                this.props.history.push('/auth/email');
             })
             .catch((error) => {
                 var errorCode = error.code;

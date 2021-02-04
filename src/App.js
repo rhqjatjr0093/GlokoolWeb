@@ -5,7 +5,7 @@ import {
     Switch,
     Redirect
 } from "react-router-dom";
-import { Home, Auth, Main } from './pages';
+import { Home, Auth, Main, Email } from './pages';
 import { auth } from './Firebase';
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
@@ -62,6 +62,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" component={Home}></Route>
                         <PublicRoute path="/auth" authenticated={this.state.authenticated} component={Auth}></PublicRoute>
+                        <PrivateRoute path="/email" authenticated={this.state.authenticated} component={Email}></PrivateRoute>
                         <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}></PrivateRoute>                        
                     </Switch>
                 </Router>

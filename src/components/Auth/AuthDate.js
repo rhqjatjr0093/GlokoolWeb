@@ -1,3 +1,4 @@
+import React from 'react';
 import '../Date/react-datetime.css';
 import Datetime from "react-datetime";
 import styled from 'styled-components';
@@ -33,16 +34,13 @@ const renderInput = ((props) => {
         }}/>
       </div>
     );
-  })
+});
 
-const Authdate = ({label, ...rest}) => (
-    
+const Authdate = ({label, ...rest}) => (    
     <Wrapper>
         <Label>{label}</Label>
         <Datetime {...rest} renderInput={renderInput}/>
-    </Wrapper>
-
-    
+    </Wrapper>    
 );
 
 export default Authdate;

@@ -42,7 +42,14 @@ class Login extends Component {
 
         auth().signInWithEmailAndPassword(email, password)
             .then((result) => {
-                console.log(result);
+                console.log(result.user)
+                if(result.user.emailVerified == true){
+                    //this.props.history.push('/main');
+                }
+                else{
+                    //this.props.history.push('/email/fail');
+                }
+               
             })
             .catch((error) => {
                 var errorCode = error.code;
