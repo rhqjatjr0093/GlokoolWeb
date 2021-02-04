@@ -15,6 +15,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ImageUploader from 'react-images-upload';
 import Modal from '@material-ui/core/Modal';
+import {Recorder} from 'react-voice-recorder'
+import 'react-voice-recorder/dist/index.css'
+
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -34,15 +37,26 @@ function getModalStyle() {
 const Chat = () => {
   const chatRoom = [1,2,3,4,5];
   const classes = useStyles();
-  const [chatMessages, setChatMessages] = React.useState([]);
-  
+  const [chatMessages, setChatMessages] = React.useState([]);  
   const [selectedIndex, setSelectedIndex] = React.useState(1);
-
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [picture, setPicture] = React.useState(null);
   const [modalStyle] = React.useState(getModalStyle);
+  const [audioModalOpen, setAudioModalOpen] = React.useState(false);
+
+  const [audioDetails, setAudioDetails] = React.useState(
+    {
+      url: null,
+      blob: null,
+      chunks: null,
+      duration: {
+        h: 0,
+        m: 0,
+        s: 0,
+      }
+    }
+  )
 
   const ChatDB = database().ref('/chats/test');
   const user = auth().currentUser;
@@ -152,10 +166,80 @@ const Chat = () => {
           });
       
     })
-
-
     handleCloseImage();
   };
+
+  // 오디오 업로드 기능 관련 구현
+  
+  const audioReset = () => {
+    setAudioDetails({
+      url: null,
+      blob: null,
+      chunks: null,
+      duration: {
+        h: 0,
+        m: 0,
+        s: 0,
+      }
+    })
+  }
+
+  const audioStop = (data) => {
+    setAudioDetails(data);
+    console.log(audioDetails);
+  }
+
+  const audioUpload = async(file) => {   
+    const MessageID = messageIdGenerator();
+    const reference = storage().ref();
+    const voiceRef = reference.child(`xxxxx/voice/${MessageID}`);
+    const message = {
+      _id : MessageID,
+      createdAt : new Date().getTime(),
+      user: {
+          _id: `${user?.uid}`,
+          name: user?.displayName,
+          avatar: user?.photoURL
+      },
+      audio : `xxxxx/voice/${MessageID}`,  //파일 경로만 전달
+      messageType : 'audio'
+    };
+
+
+    voiceRef.put(file)
+      .then(response => {
+        ChatDB.update({messages: [message, ...chatMessages]});
+    })
+
+    
+
+    
+
+  }
+
+  const handleAudioModal = () => {
+    setAudioModalOpen(true)
+    handleMenuClose();
+  }
+
+  const handleCloseAudio = () => {
+    setAudioModalOpen(false)
+    audioReset();
+  }
+
+  const getUrl = async(props) => {
+    const url = await storage().ref(props.currentMessage.audio).getDownloadURL()
+    
+    console.log(url);
+    
+    return url;
+  }
+
+  const renderAudio = (props) => {
+    return (
+      <div><audio src={''} controls/></div>
+    )
+  }
 
   // 오버플로우 메뉴 구현
   const handleMenuClick = (event) => {
@@ -234,7 +318,7 @@ const Chat = () => {
             onClose={handleMenuClose}
           >
           <MenuItem onClick={clickImageSend}>이미지</MenuItem>
-          <MenuItem onClick={handleMenuClose}>음성</MenuItem>
+          <MenuItem onClick={handleAudioModal}>음성</MenuItem>
         </Menu>   
       </div>
     );
@@ -289,6 +373,7 @@ const Chat = () => {
           <GiftedChat
             user={{
               _id: `${user?.uid}`,
+              name: user.displayName
             }}
             infiniteScroll={true}
             createdAt={new Date().getTime()}
@@ -301,6 +386,7 @@ const Chat = () => {
             renderSend={renderSend}
             renderLoading={renderLoading}
             renderBubble={renderBubble}
+            renderMessageAudio={renderAudio}
             renderComposer={renderComposer}
             renderAvatar={null}
           />
@@ -308,8 +394,8 @@ const Chat = () => {
         <Modal
           open={modalOpen}
           onClose={handleCloseImage}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
+          aria-labelledby="Image Modal"
+          aria-describedby="이미지 업로드를 위한 Modal 창"
         >
           <div style={modalStyle} className={classes.paper}>
             <ImageUploader
@@ -319,6 +405,24 @@ const Chat = () => {
               singleImage={true}
               imgExtension={['.jpg', '.gif', '.png', '.gif']}
               maxFileSize={5242880}
+            />
+          </div>
+        </Modal>
+        <Modal
+          open={audioModalOpen}
+          onClose={handleCloseAudio}
+          aria-labelledby="Audio Modal"
+          aria-describedby="오디오 메시지 전송을 위한 Modal"
+        >
+          <div style={modalStyle} className={classes.paper}>
+            <Recorder
+              record={true}
+              title={"녹음기"}
+              audioURL={audioDetails.url}
+              showUIAudio
+              handleAudioStop={data => audioStop(data)}
+              handleAudioUpload={data => audioUpload(data)}
+              handleRest={() => audioReset()}
             />
           </div>
         </Modal>
