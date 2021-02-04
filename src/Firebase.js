@@ -17,6 +17,7 @@ firebase.initializeApp(firebaseConfig); // 연동 시작
 export const auth = firebase.auth; 
 export const firestore = firebase.firestore;
 export const database = firebase.database;
+export const storage = firebase.storage;
 
 export function signInWithGoogle() {
     const provider = new auth.GoogleAuthProvider();
