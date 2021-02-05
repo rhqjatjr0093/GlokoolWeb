@@ -14,7 +14,6 @@ const BorderedButton = styled(Link)`
     border-radius: 2px;
     text-decoration: none;
     transition: .2s all;
-    margin : 10px;
     
 
     &:hover {
@@ -31,15 +30,11 @@ const BorderedButton = styled(Link)`
 
 `;
 
-const SignOut = () => {
-    auth().signOut();
-}
-
-const LogoutButton = () => (
+const SettingButton = () => (
     
-    <BorderedButton to="/" onClick={SignOut}>
-        로그아웃
+    <BorderedButton to="/main/setting">
+        개인정보 수정
     </BorderedButton>
 );
 
-export default LogoutButton;
+export default SettingButton;

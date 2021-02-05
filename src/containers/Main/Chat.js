@@ -193,25 +193,27 @@ const Chat = () => {
     const MessageID = messageIdGenerator();
     const reference = storage().ref();
     const voiceRef = reference.child(`xxxxx/voice/${MessageID}`);
-    const message = {
-      _id : MessageID,
-      createdAt : new Date().getTime(),
-      user: {
-          _id: `${user?.uid}`,
-          name: user?.displayName,
-          avatar: user?.photoURL
-      },
-      audio : `xxxxx/voice/${MessageID}`,  //파일 경로만 전달
-      messageType : 'audio'
-    };
-
-
-    voiceRef.put(file)
-      .then(response => {
-        ChatDB.update({messages: [message, ...chatMessages]});
-    })
-
     
+    voiceRef.put(file)
+      .then(async(response) => {        
+        await storage().ref(`xxxxx/voice/${MessageID}`).getDownloadURL()
+          .then(result => {
+            const message = {
+              _id : MessageID,
+              createdAt : new Date().getTime(),
+              user: {
+                  _id: `${user?.uid}`,
+                  name: user?.displayName,
+                  avatar: user?.photoURL
+              },
+              audio : result,  //파일 경로만 전달
+              messageType : 'audio'
+            };
+
+            ChatDB.update({messages: [message, ...chatMessages]});
+            setAudioModalOpen(false);
+          })        
+    })   
 
     
 
@@ -237,7 +239,7 @@ const Chat = () => {
 
   const renderAudio = (props) => {
     return (
-      <div><audio src={''} controls/></div>
+      <div className={classes.player}><audio src={props.currentMessage.audio} controls/></div>
     )
   }
 
@@ -466,6 +468,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
   },
+  player: {
+    padding: 5
+  }
 
 }));
 

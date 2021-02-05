@@ -1,23 +1,32 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Map } from 'immutable';
-import { auth, firestore } from '../../Firebase';
 
-const CHANGE_INPUT = 'main/CHANGE_INPUT'; // input 값 변경
-const INITIALIZE_FORM = 'main/INITIALIZE_FORM'; // form 초기화
+const CHANGE_INPUT = 'auth/CHANGE_INPUT'; // input 값 변경
+const INITIALIZE_FORM = 'auth/INITIALIZE_FORM'; // form 초기화
 
 export const changeInput = createAction(CHANGE_INPUT); //  { form, name, value }
 export const initializeForm = createAction(INITIALIZE_FORM); // form 
 
-const SET_ERROR = 'main/SET_ERROR'; // 오류 설정
+const SET_ERROR = 'auth/SET_ERROR'; // 오류 설정
+export const setError = createAction(SET_ERROR);
+
 
 const initialState = Map({
-    chatRoom: Map([]),
-    setting: Map({
-        name : '',
-        email : '',
-        gender : '',
-        signupDate : new Date(),  //가입한 날짜
-        birthDate : new Date()
+    register: Map({
+        form: Map({
+            email: '',
+            username: '',
+            password: '',
+            passwordConfirm: '',
+            birthDate: '',
+            gender: new Date(),
+        })
+    }),
+    login: Map({
+        form: Map({
+            email: '',
+            password: ''
+        })
     })
 });
 

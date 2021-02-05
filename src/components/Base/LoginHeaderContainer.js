@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import Header, { LogoutButton } from '../Base/Header';
+import Header, { LogoutButton, SettingButton } from '../Base/Header';
 import { connect } from 'react-redux';
 
 class LoginHeaderContainer extends Component {
     render() {
         return (
             <Header>
+                <SettingButton/>
                 <LogoutButton/>
             </Header>
         );
