@@ -86,7 +86,7 @@ class Register extends Component {
     username: (value) => {
       if (!isAlphanumeric(value) || !isLength(value, { min: 4, max: 15 })) {
         this.setError(
-          "아이디는 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다."
+          "닉네임은 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다."
         );
         return false;
       }

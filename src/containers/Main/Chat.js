@@ -44,7 +44,6 @@ const Chat = () => {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modalStyle] = React.useState(getModalStyle);
   const [audioModalOpen, setAudioModalOpen] = React.useState(false);
-
   const [audioDetails, setAudioDetails] = React.useState(
     {
       url: null,
@@ -209,14 +208,10 @@ const Chat = () => {
               audio : result,  //파일 경로만 전달
               messageType : 'audio'
             };
-
             ChatDB.update({messages: [message, ...chatMessages]});
             setAudioModalOpen(false);
           })        
     })   
-
-    
-
   }
 
   const handleAudioModal = () => {
@@ -251,9 +246,6 @@ const Chat = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  
-
 
   const renderLoading = () => {
     return (<div>Loading...</div>)
