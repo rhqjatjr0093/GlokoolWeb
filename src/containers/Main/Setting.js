@@ -1,5 +1,7 @@
 import React, { Component, useState } from "react";
-import { makeStyles, useTheme, Text } from "@material-ui/core/styles";
+import { auth, storage } from '../../Firebase'
+import { makeStyles } from "@material-ui/core/styles";
+import Button from '@material-ui/core/Button';
 import {
   SettingContent,
   InputWithLabel,
@@ -8,125 +10,176 @@ import {
   SettingGender,
   SettingError,
   SettingWrapper,
-  SettingWithLabel,
 } from "../../components/Setting";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { auth, firestore } from "../../Firebase";
-import * as authActions from "../../redux/modules/Setting";
-import moment from "moment";
-import { AuthWrapper } from "../../components/Auth";
-import { isEmail, isLength, isAlphanumeric, toDate } from "validator";
-import SettingPic from "../../components/Setting/SettingPic";
-import MenuItem from "@material-ui/core/MenuItem";
+import profile from '../../assets/profile.jpg'
+import ImageUploader from 'react-images-upload';
+import Modal from '@material-ui/core/Modal';
 
-class Setting extends Component {
-  validate = {
-    username: (value) => {
-      if (!isAlphanumeric(value) || !isLength(value, { min: 4, max: 15 })) {
-        this.setError(
-          "닉네임은 4~15 글자의 알파벳 혹은 숫자로 이뤄져야 합니다."
-        );
-        return false;
-      }
-      this.setError(null);
-      return true;
-    },
-    password: (value) => {
-      if (!isLength(value, { min: 8 })) {
-        this.setError("비밀번호를 8자 이상 입력하세요.");
-        return false;
-      }
-      this.setError(null);
-      return true;
-    },
-    passwordConfirm: (value) => {
-      if (this.props.form.get("password") !== value) {
-        this.setError("입력한 비밀번호와 일치하지 않습니다.");
-        return false;
-      }
-      this.setError(null);
-      return true;
-    },
-    birthDate: (value) => {
-      return true;
-    },
-    gender: (value) => {
-      return true;
-    },
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const Setting = () => {
+  const user = auth().currentUser;
+  const [modal, setModal] = React.useState(false);
+  const [picture, setPicture] = React.useState(null);
+  const [modalStyle] = React.useState(getModalStyle);
+  const classes = useStyles();
+
+  const DATA = {
+    username: user.displayName
+  }
+
+  React.useEffect(() => {
+    if(user.photoURL == '' || user.photoURL == null){
+      setPicture(profile);
+    }
+    else{
+      setPicture(user.photoURL);
+    }
+
+    console.log(user.photoURL);
+  },[]);
+
+  const ImageClick = () => {
+      setModal(true)
+  }
+
+  const CloseImage = () => {
+      setModal(false);
+  }
+
+  const onDrop = (pic, url) => {
+      setModal(false);
+      setPicture(url[0]);
+      let type = pic[0].type.split('/');
+
+      const picRef = storage().ref().child(`profile/${user.uid}.${type[1]}`).put(pic[0]);
+      picRef.on(storage.TaskEvent.STATE_CHANGED,
+        function(snapshot) {
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            
+            switch (snapshot.state) {
+            case storage.TaskState.PAUSED:
+                console.log('Upload is paused');
+                break;
+            case storage.TaskState.RUNNING:
+                console.log('Upload is running');
+                break;
+            }
+        }, function(error) {
+            switch (error.code) {
+                case 'storage/unauthorized':
+                break;
+            
+                case 'storage/canceled':
+                break;
+  
+                case 'storage/unknown':
+                break;
+        }
+        }, function() {
+            picRef.snapshot.ref.getDownloadURL().then(async function(downloadURL) {
+                user.updateProfile({
+                  photoURL: downloadURL,
+                })
+              });
+                  })
+            
+        CloseImage();
   };
 
-  render() {
-    const { form, error } = this.props;
-    const {
-      userPic,
-      email,
-      username,
-      password,
-      passwordConfirm,
-      birthDate,
-      gender,
-    } = this.props;
+  const updateProfile = () => {
+      user.updateProfile({
+        
+      })
+  }
 
-    const { handleChange } = this;
-
-    return (
-      <SettingWrapper>
-        <SettingContent title="회원 정보 수정">
-          {/* <SettingPic name="userPic" value={userPic} /> */}
-          <InputWithLabel
-            label="이메일"
-            name="email"
-            value="userEmail"
-            readonly
-          />
-
-          <InputWithLabel
-            label="닉네임"
-            name="username"
-            value={username}
-            onChange={handleChange}
-          />
-          <InputWithLabel
-            label="비밀번호"
-            name="password"
-            type="password"
-            value={password}
-            onChange={handleChange}
-          />
-          <InputWithLabel
-            label="비밀번호 확인"
-            name="passwordConfirm"
-            type="password"
-            value={passwordConfirm}
-            onChange={handleChange}
-          />
-          <SettingDate
-            label="생년월일"
-            value={birthDate}
-            dateFormat="YYYY-MM-DD"
-            timeFormat={false}
-            closeOnSelect={true}
-            onChange={(date) =>
-              handleChange({
-                target: { name: "birthDate", value: moment(date).format("X") },
-              })
-            }
-          />
-          <SettingGender label="성별" value={"Male"} />
-          {error && <SettingError>{error}</SettingError>}
-          <SettingButton>수정</SettingButton>
-        </SettingContent>
+  return (
+    <div>
+      <SettingWrapper>           
+           <SettingContent title="회원 정보 수정">
+            
+               <button className={classes.button}><img className={classes.image} src={picture} onClick={ImageClick}/></button>      
+             
+             <InputWithLabel
+               label="이메일"
+               name="email"
+               value={user.email}
+               readonly
+             />
+             <InputWithLabel
+               label="닉네임"
+               name="username"
+               value={DATA.username}
+             />
+             
+             <SettingGender label="성별" value={"Male"} />
+             <SettingButton onClick={updateProfile}>수정</SettingButton>
+           </SettingContent>
       </SettingWrapper>
+
+      <Modal
+          open={modal}
+          onClose={CloseImage}
+          aria-labelledby="Image Modal"
+          aria-describedby="이미지 업로드를 위한 Modal 창"
+        >
+          <div style={modalStyle} className={classes.paper}>
+            <ImageUploader
+              withIcon={true}
+              buttonText='이미지를 선택하세요'
+              onChange={onDrop}
+              singleImage={true}
+              imgExtension={['.jpg', '.gif', '.png', '.gif']}
+              maxFileSize={5242880}
+            />
+          </div>
+        </Modal>
+    </div>
+    
+
+
+    
     );
   }
-}
+
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     flexDirection: "row",
   },
   container: {
     flex: 1,
+  },
+  imgContainer: {
+
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    margin: 10
+  },
+  button: {
+    backgroundColor: '#00FF0000',
+    borderColor: '#00FF0000'
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
   },
 }));
 
