@@ -57,7 +57,8 @@ const Spacer = styled.div`
 // 하단 그래디언트 테두리
 const GradientBorder = styled.div`
   width: 100%;
-  height: 3px;
+  height: 1px;
+  opacity: .4;
   background: #707070;
 `;
 
