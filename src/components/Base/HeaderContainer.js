@@ -1,26 +1,28 @@
-import React, { Component } from 'react';
-import Header, { LoginButton, SignUpButton } from '../Base/Header';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import Header, { LoginButton, SignUpButton } from "../Base/Header";
+import { connect } from "react-redux";
+import MainBody from "./MainBody";
 
 class HeaderContainer extends Component {
-    render() {
-        const { visible } = this.props;
-        if(!visible) return null;
+  render() {
+    const { visible } = this.props;
+    if (!visible) return null;
 
-        return (
-            <Header>
-                <LoginButton/>
-                <SignUpButton/>
-            </Header>
-        );
-    }
+    return (
+      <div className="app">
+        <Header>
+          <LoginButton />
+          <SignUpButton />
+        </Header>
+        <MainBody />
+      </div>
+    );
+  }
 }
 
 export default connect(
-    (state) => ({
-        visible: state.base.getIn(['header', 'visible'])
-    }),
-    (dispatch) => ({
-
-    })
+  (state) => ({
+    visible: state.base.getIn(["header", "visible"]),
+  }),
+  (dispatch) => ({})
 )(HeaderContainer);
