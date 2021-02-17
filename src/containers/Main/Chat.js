@@ -35,20 +35,13 @@ function getModalStyle() {
 }
 
 const Chat = () => {
-  const chatRoom = [
-    {
-    name: 'minJung',
-    tour: 'GyeongChun Forest Line'
-    },
-    {
-      name: 'hyeseon',
-      tour: 'GyengChun Forest'
-    }
-
-];
+  const user = auth().currentUser;
+  const history = useHistory();
   const classes = useStyles();
   const [chatMessages, setChatMessages] = React.useState([]);  
   const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [Chat, setChat] = React.useState();
+  const [roomName, setRoomName] = React.useState();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -65,11 +58,21 @@ const Chat = () => {
         s: 0,
       }
     }
-  )
+  );
 
-  const ChatDB = database().ref('/chats/test');
-  const user = auth().currentUser;
-  const history = useHistory();
+  const chatRoom = [
+    {
+        name: 'minJung',
+        tour: 'GyeongChun Forest Line',
+        chatRoom: 'test1'
+    },
+    {
+        name: 'hyeseon',
+        tour: 'GyengChun Forest',
+        chatRoom: 'test2'
+    }
+  ];
+ 
 
 
   //메시지 아이디 생성기 (출처: https://github.com/liplylie/ReactNativeChatImageAudio/blob/master/src/components/chat.js)
@@ -82,6 +85,14 @@ const Chat = () => {
     });
   }
 
+  const changeChatRoom = (room) => {
+
+    const ChatRoom = database().ref('/chats/'+ room);
+    setChat(ChatRoom);
+    setRoomName(room);
+
+  }
+
 
   //componentwillmount 대신 사용
   //페이지 최초 로딩시 채팅 메시지 로딩
@@ -90,7 +101,31 @@ const Chat = () => {
       history.push('/email/fail')
     }
 
-    ChatDB.on('value', snapshot => {
+    //chatRoomInitiate('test1');
+    setChatMessages([]); //로컬 메시지 저장소 초기화
+    
+    const ChatRoom = database().ref('/chats/test1');
+    setChat(ChatRoom);
+    setRoomName('test1');
+    
+    
+    return () => {
+        setChatMessages([]);
+    };
+  }, [])
+
+  React.useEffect(() => {
+
+    if(Chat == undefined){
+      //아직 초기화 되지 않은 값임
+    }
+    else{
+      //Chat 값이 바뀌었을 경우 실행
+      //채팅방 전환 작업 실행
+
+      setChatMessages([]); //로컬 메시지 저장소 초기화
+
+      Chat.on('value', snapshot => {
         if (!snapshot.val()) {
             return;
         }
@@ -110,12 +145,21 @@ const Chat = () => {
             return message;
         });
         setChatMessages([...messages])
-    });;
-    
-    return () => {
-        setChatMessages([]);
-    };
-  }, [])
+      });;
+    }
+
+  }, [Chat]);
+
+  React.useEffect(() => {
+    //채팅방을 클릭했을 때 작동
+    //selectedIndex에는 채팅방 객체정보 함유
+
+    changeChatRoom(selectedIndex.chatRoom);
+
+  }, [selectedIndex])
+  
+
+
 
   // 이미지 업로드 기능 관련 구현
   const clickImageSend = () => {
@@ -132,7 +176,7 @@ const Chat = () => {
     const MessageID = messageIdGenerator();    
     let type = pic[0].type.split('/') //[1] 에 확장자 들어있음
     
-    const picRef = storage().ref().child(`xxxxx/picture/${MessageID}.${type[1]}`).put(pic[0]);
+    const picRef = storage().ref().child(`/chats/${roomName}/picture/${MessageID}.${type[1]}`).put(pic[0]);
     picRef.on(storage.TaskEvent.STATE_CHANGED,
       function(snapshot) {
           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -169,7 +213,7 @@ const Chat = () => {
                   messageType : 'image'
               };
 
-              await ChatDB.update({messages: [message, ...chatMessages]});
+              await Chat.update({messages: [message, ...chatMessages]});
           });
       
     })
@@ -199,11 +243,11 @@ const Chat = () => {
   const audioUpload = async(file) => {   
     const MessageID = messageIdGenerator();
     const reference = storage().ref();
-    const voiceRef = reference.child(`xxxxx/voice/${MessageID}`);
+    const voiceRef = reference.child(`/chats/${roomName}/voice/${MessageID}`);
     
     voiceRef.put(file)
       .then(async(response) => {        
-        await storage().ref(`xxxxx/voice/${MessageID}`).getDownloadURL()
+        await storage().ref(`/chats/${roomName}/voice/${MessageID}`).getDownloadURL()
           .then(result => {
             const message = {
               _id : MessageID,
@@ -216,7 +260,7 @@ const Chat = () => {
               audio : result,  //파일 경로만 전달
               messageType : 'audio'
             };
-            ChatDB.update({messages: [message, ...chatMessages]});
+            Chat.update({messages: [message, ...chatMessages]});
             setAudioModalOpen(false);
           })        
     })   
@@ -263,7 +307,7 @@ const Chat = () => {
       messages[0].messageType = "message";
       messages[0].createdAt = new Date().getTime();
 
-      await ChatDB.update({messages: [messages[0], ...chatMessages]});
+      await Chat.update({messages: [messages[0], ...chatMessages]});
   }        
 
   const renderBubble = (props) => {
