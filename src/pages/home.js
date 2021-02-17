@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import HeaderContainer from "../components/Base/HeaderContainer";
 import * as baseActions from "../redux/modules/base";
+import MainBody from "../components/Base/MainBody";
+import MainFooter from "../components/Base/MainFooter";
 
 class Home extends Component {
   componentDidMount() {
@@ -20,9 +22,9 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <div>
           <HeaderContainer />
-        </div>
+          <MainBody />
+          <MainFooter />
       </div>
     );
   }

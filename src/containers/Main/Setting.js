@@ -199,17 +199,21 @@ const Setting = () => {
             />
 
             {/* 성별 선택 폼 */}
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel id="demo-simple-select-outlined-label">
+            <FormControl className={classes.formControl}>
+              <InputLabel
+                shrink
+                id="demo-simple-select-placeholder-label-label"
+              >
                 성별
               </InputLabel>
               <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                defaultValue={gender}
+                labelId="demo-simple-select-placeholder-label-label"
+                id="demo-simple-select-placeholder-label"
+                defaultValue={"Male"}
                 value={gender}
                 onChange={handleChangeGender}
-                label="성별"
+                displayEmpty
+                className={classes.selectEmpty}
               >
                 <MenuItem value={"Male"}>Male</MenuItem>
                 <MenuItem value={"Female"}>Female</MenuItem>

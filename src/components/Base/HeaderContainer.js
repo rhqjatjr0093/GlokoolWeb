@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Header, { LoginButton, SignUpButton } from "../Base/Header";
 import { connect } from "react-redux";
-import MainBody from "./MainBody";
 
 class HeaderContainer extends Component {
   render() {
@@ -14,7 +13,6 @@ class HeaderContainer extends Component {
           <LoginButton />
           <SignUpButton />
         </Header>
-        <MainBody />
       </div>
     );
   }

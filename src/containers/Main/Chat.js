@@ -35,7 +35,17 @@ function getModalStyle() {
 }
 
 const Chat = () => {
-  const chatRoom = [1,2,3,4,5];
+  const chatRoom = [
+    {
+    name: 'minJung',
+    tour: 'GyeongChun Forest Line'
+    },
+    {
+      name: 'hyeseon',
+      tour: 'GyengChun Forest'
+    }
+
+];
   const classes = useStyles();
   const [chatMessages, setChatMessages] = React.useState([]);  
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -102,12 +112,10 @@ const Chat = () => {
         setChatMessages([...messages])
     });;
     
-    
     return () => {
         setChatMessages([]);
     };
   }, [])
-
 
   // 이미지 업로드 기능 관련 구현
   const clickImageSend = () => {
@@ -355,7 +363,7 @@ const Chat = () => {
                   <ListItemAvatar>
                     <Avatar src='../../assets/profile.jpg'/>
                   </ListItemAvatar>
-                  <ListItemText primary='장충단 길' secondary='고객명'/>
+                  <ListItemText primary={key.tour} secondary={key.name}/>
                 </ListItem>
               ))}
             </List>

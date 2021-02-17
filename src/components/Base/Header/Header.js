@@ -1,77 +1,88 @@
-import React from 'react';
-import styled from 'styled-components';
-import { shadow, media } from '../../../lib/styleUtil';
+import React from "react";
+import styled from "styled-components";
+import { shadow, media } from "../../../lib/styleUtil";
+import logoImg from "../../../assets/glokool-logo@3x.png";
 
-
-
-// 상단 고정, 그림자
+// header 상단 고정, 그림자
 const Positioner = styled.div`
-    flex-direction: column;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+  flex-direction: column;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
 `;
 
 // 흰 배경, 내용 중간 정렬
 const WhiteBackground = styled.div`
-    background: white;
-    display: flex;
-    justify-content: center;
-    height: auto;
+  width: 100%;
+  background: #ffd853;
+  display: flex;
+  justify-content: center;
+  height: auto;
 `;
 
 // 해더의 내용
 const HeaderContents = styled.div`
-    width: 1200px;
-    height: 65px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  width: 1400px;
+  height: 65px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-    padding-right: 1rem;
-    padding-left: 1rem;
-    ${media.wide`
+  padding-right: 1rem;
+  padding-left: 1rem;
+  ${media.wide`
         width: 992px;
     `}
 
-    ${media.tablet`
+  ${media.tablet`
         width: 100%;
     `}
 `;
 
 // 로고
 const Logo = styled.div`
-    font-size: x-large;
-    color: #FFC043;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  //   width: 100%;
+  padding: 0 100px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 // 중간 여백
 const Spacer = styled.div`
-    flex-grow: 1;
+  flex-grow: 1;
 `;
 
 // 하단 그래디언트 테두리
 const GradientBorder = styled.div`
-    height: 3px;
-    background: #707070;
+  width: 100%;
+  height: 3px;
+  background: #707070;
 `;
 
-const Header = ({children}) => {
-    return (
-        <Positioner>
-            <WhiteBackground>
-                <HeaderContents>
-                    <Logo>GLOKOOL</Logo>
-                    <Spacer/>
-                    {children}
-                </HeaderContents>
-            </WhiteBackground>
-            <GradientBorder/>
-        </Positioner>
-    );
+const LogoStyle = {
+  height: "20px",
+  width: "129px",
+};
+
+const Header = ({ children }) => {
+  return (
+    <Positioner>
+      <WhiteBackground>
+        <HeaderContents>
+          <Logo>
+            <a href="/">
+              <img src={logoImg} alt="" style={LogoStyle} />
+            </a>
+          </Logo>
+          <Spacer />
+          {children}
+        </HeaderContents>
+      </WhiteBackground>
+      <GradientBorder />
+    </Positioner>
+  );
 };
 
 export default Header;

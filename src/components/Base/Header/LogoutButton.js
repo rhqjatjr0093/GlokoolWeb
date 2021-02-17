@@ -6,8 +6,8 @@ import { auth } from '../../../Firebase'
 
 const BorderedButton = styled(Link)`
     font-weight: 600;
-    color: #FFC043;
-    border: 1px solid #FFC043;
+    color: #666d75;
+    // border: 1px solid #FFC043;
     padding: 0.5rem;
     padding-bottom: 0.4rem;
     cursor: pointer;
