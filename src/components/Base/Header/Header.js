@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { shadow, media } from "../../../lib/styleUtil";
-import logoImg from "../../../assets/glokool-logo@3x.png";
+import logoImg from "../../../assets/Glokool_logo_black.png";
 
 // header 상단 고정, 그림자
 const Positioner = styled.div`
