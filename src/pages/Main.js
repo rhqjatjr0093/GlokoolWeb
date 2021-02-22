@@ -14,6 +14,7 @@ class Main extends Component {
         <LoginHeaderContainer />
         <Route exact path="/main" component={Chat} />
         <Route exact path="/main/setting" component={Setting} />
+          
       </div>
     );
   }

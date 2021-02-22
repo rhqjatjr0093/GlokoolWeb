@@ -395,93 +395,123 @@ const Chat = () => {
 
   return (
     <div>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <Toolbar />
-        <div className={classes.drawerContainer}>
-          <List button selected>
-            {chatRoom.map((key) => (
-              <ListItem
-                key={key}
-                button
-                selected={selectedIndex === key}
-                classes={{ selected: classes.active }}
-                onClick={() => setSelectedIndex(key)}
-              >
-                <ListItemAvatar>
-                  <Avatar src="../../assets/profile.jpg" />
-                </ListItemAvatar>
-                <ListItemText primary={key.tour} secondary={key.name} />
-              </ListItem>
-            ))}
-          </List>
-        </div>
-      </Drawer>
-
-      <div className={classes.chat}>
-        <Toolbar />
-        <GiftedChat
-          user={{
-            _id: `${user?.uid}`,
-            name: user.displayName,
+      {Object.keys(chatRoom).length == 0 ? (
+        <div
+          style={{
+            width: "100%",
+            height: "1000px",
+            backgroundColor: "#c9c9c9",
+            opacity: "0.3",
+            position: "relative",
           }}
-          infiniteScroll={true}
-          createdAt={new Date().getTime()}
-          textInputProps={{ autoFocus: true }}
-          messages={chatMessages}
-          alwaysShowSend={true}
-          renderUsernameOnMessage={true}
-          onSend={(messages) => onSend(messages)}
-          renderActions={renderActions}
-          renderSend={renderSend}
-          renderLoading={renderLoading}
-          renderBubble={renderBubble}
-          renderMessageAudio={renderAudio}
-          renderComposer={renderComposer}
-          renderAvatar={null}
-        />
+        >
+          <span
+            style={{
+              width: "300px",
+              fontSize: "20px",
+              color: "black",
+              opacity: "2",
+              textAlign: "center",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+            }}
+          >
+            결과 없음
+          </span>
+        </div>
+      ) : (
+        <div>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <Toolbar />
+            <div className={classes.drawerContainer}>
+              <List button selected>
+                {chatRoom.map((key) => (
+                  <ListItem
+                    key={key}
+                    button
+                    selected={selectedIndex === key}
+                    classes={{ selected: classes.active }}
+                    onClick={() => setSelectedIndex(key)}
+                  >
+                    <ListItemAvatar>
+                      <Avatar src="../../assets/profile.jpg" />
+                    </ListItemAvatar>
+                    <ListItemText primary={key.tour} secondary={key.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          </Drawer>
 
-        <Modal
-          open={modalOpen}
-          onClose={handleCloseImage}
-          aria-labelledby="Image Modal"
-          aria-describedby="이미지 업로드를 위한 Modal 창"
-        >
-          <div style={modalStyle} className={classes.paper}>
-            <ImageUploader
-              withIcon={true}
-              buttonText="이미지를 선택하세요"
-              onChange={onDrop}
-              singleImage={true}
-              imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-              maxFileSize={5242880}
+          <div className={classes.chat}>
+            <Toolbar />
+            <GiftedChat
+              user={{
+                _id: `${user?.uid}`,
+                name: user.displayName,
+              }}
+              infiniteScroll={true}
+              createdAt={new Date().getTime()}
+              textInputProps={{ autoFocus: true }}
+              messages={chatMessages}
+              alwaysShowSend={true}
+              renderUsernameOnMessage={true}
+              onSend={(messages) => onSend(messages)}
+              renderActions={renderActions}
+              renderSend={renderSend}
+              renderLoading={renderLoading}
+              renderBubble={renderBubble}
+              renderMessageAudio={renderAudio}
+              renderComposer={renderComposer}
+              renderAvatar={null}
             />
+
+            <Modal
+              open={modalOpen}
+              onClose={handleCloseImage}
+              aria-labelledby="Image Modal"
+              aria-describedby="이미지 업로드를 위한 Modal 창"
+            >
+              <div style={modalStyle} className={classes.paper}>
+                <ImageUploader
+                  withIcon={true}
+                  buttonText="이미지를 선택하세요"
+                  onChange={onDrop}
+                  singleImage={true}
+                  imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                  maxFileSize={5242880}
+                />
+              </div>
+            </Modal>
+            <Modal
+              open={audioModalOpen}
+              onClose={handleCloseAudio}
+              aria-labelledby="Audio Modal"
+              aria-describedby="오디오 메시지 전송을 위한 Modal"
+            >
+              <div style={modalStyle} className={classes.paper}>
+                <Recorder
+                  record={true}
+                  title={"녹음기"}
+                  audioURL={audioDetails.url}
+                  showUIAudio
+                  handleAudioStop={(data) => audioStop(data)}
+                  handleAudioUpload={(data) => audioUpload(data)}
+                  handleRest={() => audioReset()}
+                />
+              </div>
+            </Modal>
           </div>
-        </Modal>
-        <Modal
-          open={audioModalOpen}
-          onClose={handleCloseAudio}
-          aria-labelledby="Audio Modal"
-          aria-describedby="오디오 메시지 전송을 위한 Modal"
-        >
-          <div style={modalStyle} className={classes.paper}>
-            <Recorder
-              record={true}
-              title={"녹음기"}
-              audioURL={audioDetails.url}
-              showUIAudio
-              handleAudioStop={(data) => audioStop(data)}
-              handleAudioUpload={(data) => audioUpload(data)}
-              handleRest={() => audioReset()}
-            />
-          </div>
-        </Modal>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
