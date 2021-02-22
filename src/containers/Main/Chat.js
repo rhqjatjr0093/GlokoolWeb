@@ -58,16 +58,16 @@ const Chat = () => {
   });
 
   const chatRoom = [
-    {
-      name: "minJung",
-      tour: "GyeongChun Forest Line",
-      chatRoom: "test1",
-    },
-    {
-      name: "hyeseon",
-      tour: "GyengChun Forest",
-      chatRoom: "test2",
-    },
+    // {
+    //   name: "minJung",
+    //   tour: "GyeongChun Forest Line",
+    //   chatRoom: "test1",
+    // },
+    // {
+    //   name: "hyeseon",
+    //   tour: "GyengChun Forest",
+    //   chatRoom: "test2",
+    // },
   ];
 
   //메시지 아이디 생성기 (출처: https://github.com/liplylie/ReactNativeChatImageAudio/blob/master/src/components/chat.js)
@@ -418,7 +418,7 @@ const Chat = () => {
               transform: "translate(-50%,-50%)",
             }}
           >
-            결과 없음
+            진행중인 투어 없음
           </span>
         </div>
       ) : (
