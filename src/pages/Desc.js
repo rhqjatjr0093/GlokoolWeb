@@ -35,12 +35,12 @@ class Home extends Component {
         <MainFooter />
 
         {/* 라우터 */}
-        {/* <Router>
+        <Router>
           <Switch>
-            <Route exact path="/home/terms" component={Terms}></Route>
-            <Route exact path="/home/perInfo" component={PerInfo}></Route>
+            <Route exact path="/desc/terms" component={Terms}></Route>
+            <Route exact path="/desc/perInfo" component={PerInfo}></Route>
           </Switch>
-        </Router> */}
+        </Router>
       </div>
     );
   }

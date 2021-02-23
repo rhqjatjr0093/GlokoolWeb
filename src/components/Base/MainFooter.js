@@ -6,43 +6,65 @@ import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { SvgIcon } from "@material-ui/core";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import IconButton from "@material-ui/core/IconButton";
-const BootstrapButton = withStyles({
-  root: {
-    boxShadow: "none",
-    textTransform: "none",
-    fontSize: 16,
-    padding: "6px 12px",
-    border: "1px solid",
-    lineHeight: 1.5,
-    backgroundColor: "#0063cc",
-    borderColor: "#0063cc",
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:hover": {
-      backgroundColor: "#0069d9",
-      borderColor: "#0062cc",
-      boxShadow: "none",
+import YouTubeIcon from "@material-ui/icons/YouTube";
+import AppleIcon from "@material-ui/icons/Apple";
+import ShopIcon from "@material-ui/icons/Shop";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+// const BootstrapButton = withStyles({
+//   root: {
+//     boxShadow: "none",
+//     textTransform: "none",
+//     fontSize: 16,
+//     padding: "6px 12px",
+//     border: "1px solid",
+//     lineHeight: 1.5,
+//     backgroundColor: "#0063cc",
+//     borderColor: "#0063cc",
+//     fontFamily: [
+//       "-apple-system",
+//       "BlinkMacSystemFont",
+//       '"Segoe UI"',
+//       "Roboto",
+//       '"Helvetica Neue"',
+//       "Arial",
+//       "sans-serif",
+//       '"Apple Color Emoji"',
+//       '"Segoe UI Emoji"',
+//       '"Segoe UI Symbol"',
+//     ].join(","),
+//     "&:hover": {
+//       backgroundColor: "#0069d9",
+//       borderColor: "#0062cc",
+//       boxShadow: "none",
+//     },
+//     "&:active": {
+//       boxShadow: "none",
+//       backgroundColor: "#0062cc",
+//       borderColor: "#005cbf",
+//     },
+//     "&:focus": {
+//       boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
+//     },
+//   },
+// })(Button);
+import { createMuiTheme } from "@material-ui/core/styles";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      light: "#757ce8",
+      main: "#3f50b5",
+      dark: "#002884",
+      contrastText: "#fff",
     },
-    "&:active": {
-      boxShadow: "none",
-      backgroundColor: "#0062cc",
-      borderColor: "#005cbf",
-    },
-    "&:focus": {
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
+    secondary: {
+      light: "#ff7961",
+      main: "#f44336",
+      dark: "#ba000d",
+      contrastText: "#000",
     },
   },
-})(Button);
+});
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -64,16 +86,45 @@ const MainFooter = () => {
         <div className="footer_top">
           <div className="footer_warning">
             <div className="footer_terms">
-              <ColorButton color="primary">이용약관</ColorButton>
+              <ColorButton to="/desc/terms">이용약관</ColorButton>
             </div>
             <div className="footer_terms">
-              <ColorButton>개인정보 처리방침 </ColorButton>
+              <ColorButton to="/desc/perInfo">개인정보 처리방침 </ColorButton>
             </div>
           </div>
           <div className="footer_icon">
+            {/* instagram */}
             <div className="footer__option">
-              <IconButton>
-                <InstagramIcon color="white" fontSize="large" />
+              <IconButton href="https://www.instagram.com/glokool_official/?hl=ko">
+                <InstagramIcon style={{ color: "#f5f5f5" }} />
+              </IconButton>
+            </div>
+
+            {/* youtube */}
+            <div className="footer__option">
+              <IconButton href="#text-buttons">
+                <YouTubeIcon style={{ color: "#f5f5f5" }} />
+              </IconButton>
+            </div>
+
+            {/* kakao */}
+            <div className="footer__option">
+              <IconButton href="http://kakao.com/_eQNzK">
+                <QuestionAnswerIcon style={{ color: "#f5f5f5" }} />
+              </IconButton>
+            </div>
+
+            {/* applestore */}
+            <div className="footer__option">
+              <IconButton href="#text-buttons">
+                <AppleIcon style={{ color: "#f5f5f5" }} />
+              </IconButton>
+            </div>
+
+            {/* googleplay */}
+            <div className="footer__option">
+              <IconButton href="#text-buttons">
+                <ShopIcon style={{ color: "#f5f5f5" }} />
               </IconButton>
             </div>
           </div>
