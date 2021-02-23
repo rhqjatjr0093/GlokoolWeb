@@ -102,14 +102,14 @@ const MainFooter = () => {
 
             {/* youtube */}
             <div className="footer__option">
-              <IconButton href="#text-buttons">
+              <IconButton href="https://www.youtube.com/channel/UC4oTkStEsZooHYGZlDkxp1Q">
                 <YouTubeIcon style={{ color: "#f5f5f5" }} />
               </IconButton>
             </div>
 
             {/* kakao */}
             <div className="footer__option">
-              <IconButton href="http://kakao.com/_eQNzK">
+              <IconButton href="http://pf.kakao.com/_eQNzK">
                 <QuestionAnswerIcon style={{ color: "#f5f5f5" }} />
               </IconButton>
             </div>

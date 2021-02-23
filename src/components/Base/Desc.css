@@ -1,0 +1,16 @@
+.desc_container {
+  width: 1200px;
+  margin: 50px auto;
+  font-family: -apple-system, BlinkMacSystemFont, Malgun Gothic,
+    "\B9D1\C740 \ACE0\B515", Roboto, Helvetica, Arial, sans-serif;
+  color: #726c6c;
+  margin-top: 30px;
+}
+
+.desc_top {
+  margin-bottom: 30px;
+}
+
+hr {
+  border: 1px solid #c9c9c9;
+}
