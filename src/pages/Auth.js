@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from '../redux/modules/base';
 import { AuthWrapper } from '../components/Auth'
-import { Login, Register, Email } from '../containers/Auth';
+import { Login, Register } from '../containers/Auth';
 
 
 class Auth extends Component {
@@ -23,7 +23,6 @@ class Auth extends Component {
             <AuthWrapper>
                 <Route path="/auth/login" component={Login}/>
                 <Route path="/auth/register" component={Register}/>
-                <Route path="/auth/email" component={Email}/>
             </AuthWrapper>
         );
     }

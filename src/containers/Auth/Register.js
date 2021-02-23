@@ -167,7 +167,7 @@ class Register extends Component {
           birthDate
         );
         await profileUpdate(response.user, username);
-        this.props.history.push("/auth/email");
+        this.props.history.push("/auth/email/verification");
       })
       .catch((error) => {
         var errorCode = error.code;

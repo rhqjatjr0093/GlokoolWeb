@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from '../redux/modules/base';
 import { AuthWrapper } from '../components/Auth'
-import { EmailVefication, EmailFail } from '../containers/Email';
+import { EmailVefication, EmailFail, EmailCheck } from '../containers/Email';
 
 class Email extends Component {
     // 페이지에 진입 할 때 헤더를 비활성화
@@ -20,8 +20,7 @@ class Email extends Component {
     render() {
         return (
             <AuthWrapper>
-                <Route path="/email/verification" component={EmailVefication}/>
-                <Route path="/email/fail" component={EmailFail}/>
+                <EmailCheck/>
             </AuthWrapper>
         );
     }

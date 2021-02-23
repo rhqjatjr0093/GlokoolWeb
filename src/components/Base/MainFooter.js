@@ -86,10 +86,10 @@ const MainFooter = () => {
         <div className="footer_top">
           <div className="footer_warning">
             <div className="footer_terms">
-              <ColorButton to="/desc/terms">이용약관</ColorButton>
+              <ColorButton href="/desc/terms">이용약관</ColorButton>
             </div>
             <div className="footer_terms">
-              <ColorButton to="/desc/perInfo">개인정보 처리방침 </ColorButton>
+              <ColorButton href="/desc/perInfo">개인정보 처리방침 </ColorButton>
             </div>
           </div>
           <div className="footer_icon">

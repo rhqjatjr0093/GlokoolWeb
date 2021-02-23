@@ -36,7 +36,7 @@ const retry = (func, params = [], maxRetriesCount = 5, interval = 500) => new Pr
      });
   });
 
-class Email extends Component {
+class EmailCheck extends Component {
     
     componentDidMount() {
         //첫 로딩후에만 실행되는 코드
@@ -72,4 +72,4 @@ export default connect(
     (dispatch) => ({
         AuthActions: bindActionCreators(authActions, dispatch)
     })
-)(Email);
+)(EmailCheck);

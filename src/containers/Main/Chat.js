@@ -17,6 +17,9 @@ import ImageUploader from "react-images-upload";
 import Modal from "@material-ui/core/Modal";
 import { Recorder } from "react-voice-recorder";
 import "react-voice-recorder/dist/index.css";
+import {SERVER} from '../../server';
+import axios from 'axios';
+import { PermDeviceInformationTwoTone } from "@material-ui/icons";
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -41,6 +44,7 @@ const Chat = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [Chat, setChat] = React.useState();
   const [roomName, setRoomName] = React.useState();
+  const [chatRoom, setChatRoom] = React.useState([]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -56,19 +60,6 @@ const Chat = () => {
       s: 0,
     },
   });
-
-  const chatRoom = [
-    // {
-    //   name: "minJung",
-    //   tour: "GyeongChun Forest Line",
-    //   chatRoom: "test1",
-    // },
-    // {
-    //   name: "hyeseon",
-    //   tour: "GyengChun Forest",
-    //   chatRoom: "test2",
-    // },
-  ];
 
   //메시지 아이디 생성기 (출처: https://github.com/liplylie/ReactNativeChatImageAudio/blob/master/src/components/chat.js)
   //메시지 구분을 위한 임시 조치 (시간, uid를 넣어서 만들면 될 듯)
@@ -86,19 +77,42 @@ const Chat = () => {
     setRoomName(room);
   };
 
+  const initiateChatList = async() => {
+    await axios.get('/api/guide/' + user.uid)
+      .then((response) => {
+        setChatRoom(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+
+    
+  }
   //componentwillmount 대신 사용
   //페이지 최초 로딩시 채팅 메시지 로딩
   React.useEffect(() => {
     if (user.emailVerified == false) {
-      history.push("/email/fail");
+      history.push("/email");
     }
-
-    //chatRoomInitiate('test1');
+    
     setChatMessages([]); //로컬 메시지 저장소 초기화
 
-    const ChatRoom = database().ref("/chats/test1");
-    setChat(ChatRoom);
-    setRoomName("test1");
+    axios.get('/api/guide/' + user.uid)
+      .then((response) => {
+        setChatRoom(response.data);
+        console.log(response.data)
+        
+        if(response.data.length != 0){
+          const ChatRoom = database().ref(`/chats/${response.data[0].tourCode}`);
+          setChat(ChatRoom);
+          setRoomName(response.data[0].tourCode);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+
+
 
     return () => {
       setChatMessages([]);
@@ -142,7 +156,7 @@ const Chat = () => {
     //채팅방을 클릭했을 때 작동
     //selectedIndex에는 채팅방 객체정보 함유
 
-    changeChatRoom(selectedIndex.chatRoom);
+    changeChatRoom(selectedIndex.tourCode);
   }, [selectedIndex]);
 
   // 이미지 업로드 기능 관련 구현
@@ -444,7 +458,7 @@ const Chat = () => {
                     <ListItemAvatar>
                       <Avatar src="../../assets/profile.jpg" />
                     </ListItemAvatar>
-                    <ListItemText primary={key.tour} secondary={key.name} />
+                    <ListItemText primary={key.title} secondary={key.name} />
                   </ListItem>
                 ))}
               </List>

@@ -33,14 +33,6 @@ class Home extends Component {
         <HeaderContainer />
         <MainBody />
         <MainFooter />
-
-        {/* 라우터 */}
-        {/* <Router>
-          <Switch>
-            <Route exact path="/home/terms" component={Terms}></Route>
-            <Route exact path="/home/perInfo" component={PerInfo}></Route>
-          </Switch>
-        </Router> */}
       </div>
     );
   }

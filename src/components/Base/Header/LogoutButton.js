@@ -37,7 +37,7 @@ const SignOut = () => {
 
 const LogoutButton = () => (
     
-    <BorderedButton to="/" onClick={SignOut}>
+    <BorderedButton onClick={SignOut}>
         로그아웃
     </BorderedButton>
 );

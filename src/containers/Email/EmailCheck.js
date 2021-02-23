@@ -9,14 +9,14 @@ import * as authActions from '../../redux/modules/Auth';
 
 
 const sendEmail = async() => {
-    const user = auth().currentUser;
-    
     auth().languageCode = 'kr'; // 한국어로 이메일 전송
+    const user = auth().currentUser;
+
     await user.sendEmailVerification()
         .then(function() {
             //이메일을 성공적으로 전송
             //로그 아웃
-            
+            //auth().signOut();
         })
         .catch(function(error){
             console.log(error);
@@ -38,24 +38,24 @@ const retry = (func, params = [], maxRetriesCount = 5, interval = 500) => new Pr
      });
   });
 
-class EmailVefication extends Component {
+class EmailCheck extends Component {
     
     componentDidMount() {
-        const userValue = auth().currentUser;
         //첫 로딩후에만 실행되는 코드
         //이메일 전송 및 확인 (오류 발생시 최대 5번 재시도)
-        if(userValue != null){
-            retry(sendEmail);
+
+        const user = auth().currentUser;
+
+        if(user == null || user == undefined){
+            this.props.history.push('/');
         }
         else{
-            console.log(userValue)
-            this.props.history.push('/');
+            retry(sendEmail);
         }
 
     }
 
     handleClick = () => {
-        this.props.history.push('/');
         auth().signOut();
     }
 
@@ -64,6 +64,7 @@ class EmailVefication extends Component {
             <AuthContent title="이메일 인증">
                 <AuthText context='이메일 주소로 인증링크가 발송되었습니다'/>
                 <AuthText context='링크를 클릭해주세요'/>
+                <AuthButton onClick={retry(sendEmail)}>이메일 재전송</AuthButton>
                 <AuthButton onClick={this.handleClick}>메인으로</AuthButton>
             </AuthContent>
         );
@@ -76,4 +77,4 @@ export default connect(
     (dispatch) => ({
         AuthActions: bindActionCreators(authActions, dispatch)
     })
-)(EmailVefication);
+)(EmailCheck);
