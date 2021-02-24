@@ -97,12 +97,12 @@ const Chat = () => {
     
     setChatMessages([]); //로컬 메시지 저장소 초기화
 
-    axios.get('/api/guide/' + user.uid)
+    
+    axios.get(SERVER+ '/api/guide/' + user.uid)
       .then((response) => {
-        setChatRoom(response.data);
-        console.log(response.data)
-        
+          console.log(response)
         if(response.data.length != 0){
+          setChatRoom(response.data);
           const ChatRoom = database().ref(`/chats/${response.data[0].tourCode}`);
           setChat(ChatRoom);
           setRoomName(response.data[0].tourCode);
@@ -111,7 +111,7 @@ const Chat = () => {
       .catch((err) => {
         console.log(err);
       })
-
+    
 
 
     return () => {
@@ -456,7 +456,7 @@ const Chat = () => {
                     onClick={() => setSelectedIndex(key)}
                   >
                     <ListItemAvatar>
-                      <Avatar src="../../assets/profile.jpg" />
+                      
                     </ListItemAvatar>
                     <ListItemText primary={key.title} secondary={key.name} />
                   </ListItem>
