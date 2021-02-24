@@ -455,8 +455,8 @@ const Chat = () => {
                     classes={{ selected: classes.active }}
                     onClick={() => setSelectedIndex(key)}
                   >
-                    <ListItemAvatar>
-                      
+                    <ListItemAvatar>                      
+                      <Avatar src='../../assets/profile.jpg'/>
                     </ListItemAvatar>
                     <ListItemText primary={key.title} secondary={key.name} />
                   </ListItem>
