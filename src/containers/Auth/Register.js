@@ -24,6 +24,7 @@ const profileDocUpdate = async (user, name, email, gender, birthDate) => {
       gender: gender,
       signupDate: new Date(), //가입한 날짜
       birthDate: birthDate,
+      avatar: '',
     })
     .then(() => {
       console.log("프로필 문서 업데이트 성공");

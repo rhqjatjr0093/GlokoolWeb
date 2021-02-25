@@ -121,6 +121,20 @@ const Setting = () => {
           user.updateProfile({
             photoURL: downloadURL,
           });
+          
+          const profileRef = firestore()
+            .collection("Guides")
+            .doc(user.uid)
+            .update({
+              avatar : downloadURL
+            })
+            .then(() => {
+                console.log("Document successfully written!");
+            })
+            .catch((error) => {
+                console.error("Error writing document: ", error);
+            });
+
         });
       }
     );
