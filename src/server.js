@@ -1,1 +1,1 @@
-export const SERVER = 'http://52.78.243.84:47193';
+export const SERVER = 'https://glokool.shop';
